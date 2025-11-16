@@ -1,0 +1,17 @@
+com\example\mindmate\MentalHealthApplication.class
+com\example\mindmate\service\ChatService.class
+com\example\mindmate\service\EmailService.class
+com\example\mindmate\service\EmailServiceImpl.class
+com\example\mindmate\service\UserService.class
+com\example\mindmate\service\OtpServiceImpl.class
+com\example\mindmate\controller\ChatController.class
+com\example\mindmate\model\ChatMessage.class
+com\example\mindmate\config\SecurityConfig.class
+com\example\mindmate\controller\AuthController.class
+com\example\mindmate\service\OtpServiceImpl$OtpData.class
+com\example\mindmate\repository\UserRepository.class
+com\example\mindmate\repository\ChatMessageRepository.class
+com\example\mindmate\model\User.class
+com\example\mindmate\model\Mood.class
+com\example\mindmate\service\UserServiceImpl.class
+com\example\mindmate\service\OtpService.class
