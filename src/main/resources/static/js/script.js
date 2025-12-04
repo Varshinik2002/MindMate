@@ -1,3 +1,9 @@
+// --- Set API URL dynamically ---
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:8080"
+    : "https://mindmate-ti01.onrender.com"; // <-- replace with your backend Render URL
+
 // --- Chat Logic ---
 async function sendMessage() {
   const input = document.getElementById("userInput");
@@ -6,21 +12,18 @@ async function sendMessage() {
   const userText = input.value.trim();
   if (userText === "") return;
 
-  const email = localStorage.getItem("email"); // ⭐ required
+  const email = localStorage.getItem("email");
 
   // Show user message
   chatBox.innerHTML += `<p class='user'>You: ${userText}</p>`;
 
   try {
-    const response = await fetch("http://localhost:8080/api/chat/send", {
+    const response = await fetch(`${API_BASE_URL}/api/chat/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        email: email,     // ⭐ SEND EMAIL TO BACKEND
-        message: userText
-      })
+      body: JSON.stringify({ email: email, message: userText })
     });
 
     if (!response.ok) throw new Error("Server not responding");
@@ -40,23 +43,21 @@ async function sendMessage() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-
-// --- Load Previous Chat From DATABASE ---
+// --- Load Previous Chat ---
 window.onload = async () => {
   const email = localStorage.getItem("email");
   const chatBox = document.getElementById("chatBox");
 
-  // Load mood (unchanged)
+  // Load mood
   const lastMood = localStorage.getItem("lastMood");
   if (lastMood) {
     document.getElementById("moodResponse").innerText =
       `Last time you felt: ${lastMood}. How are you today? 🌼`;
   }
 
-  // ⭐ Load chat from backend
   if (email) {
     try {
-      const res = await fetch(`http://localhost:8080/api/chat/history?email=${email}`);
+      const res = await fetch(`${API_BASE_URL}/api/chat/history?email=${email}`);
       const history = await res.json();
 
       history.forEach(msg => {
@@ -66,7 +67,6 @@ window.onload = async () => {
           chatBox.innerHTML += `<p class='bot'>Bot: ${msg.message}</p>`;
         }
       });
-
     } catch (err) {
       console.error("Error loading chat history:", err);
     }
