@@ -1,0 +1,49 @@
+/* 🌼 MindMate Styles */
+body {
+  transition: background-color 0.4s, color 0.4s;
+}
+
+/* Custom scroll for chat */
+#chatBox {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* Chat messages */
+.user {
+  color: #1e3a8a;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.bot {
+  color: #6b7280;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+/* 🌙 Dark mode support */
+.dark {
+  background-color: #0f172a;
+  color: #f9fafb;
+}
+
+.dark #chatBox {
+  border-color: #334155;
+}
+
+.dark button {
+  background-color: #334155;
+  color: #f9fafb;
+}
+
+.dark button:hover {
+  background-color: #475569;
+}
+
+button {
+  transition: all 0.2s ease-in-out;
+}
