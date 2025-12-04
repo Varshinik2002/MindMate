@@ -17,28 +17,42 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
+            // Disable CSRF for APIs
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> {})
+
+            // Configure CORS to allow frontend access
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowCredentials(true);
+                config.setAllowedOrigins(List.of("*")); // For production, replace "*" with your frontend URL
+                config.setAllowedHeaders(List.of("*"));
+                config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+                return config;
+            }))
+
+            // Public endpoints
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().permitAll()       // your app is public
+                .requestMatchers("/api/chat/**").permitAll()
+                .anyRequest().permitAll() // any other requests are public
             )
+
+            // Disable default login forms and HTTP basic
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());
 
         return http.build();
     }
 
-    // GLOBAL CORS FIX
+    // Global CORS filter (optional, can stay as backup)
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedOrigins(List.of("*")); // Replace "*" with your frontend URL in production
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
 
@@ -46,6 +60,7 @@ public class SecurityConfig {
         return new CorsFilter(source);
     }
 
+    // Password encoder for user registration / authentication
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
