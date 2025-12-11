@@ -83,7 +83,8 @@ public class AuthController {
                 return ResponseEntity.status(404).body(resp);
             }
 
-            String otp = String.valueOf((int)(Math.random()*900000)+100000);
+            // generate 6-digit OTP
+            String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
             otpService.storeOtp(email, otp);
             emailService.sendOtpEmail(email, otp);
 
@@ -135,4 +136,4 @@ public class AuthController {
             return ResponseEntity.status(500).body(resp);
         }
     }
-}
+} 
