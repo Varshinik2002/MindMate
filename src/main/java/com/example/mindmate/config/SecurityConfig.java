@@ -20,15 +20,22 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowCredentials(true);
-                config.setAllowedOrigins(List.of("https://mindmate-27cv.onrender.com")); // Frontend URL
+                // Replace with your frontend URL or "*" for testing
+                config.setAllowedOrigins(List.of("https://mindmate-27cv.onrender.com", "http://localhost:3000"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
                 return config;
             }))
             .authorizeHttpRequests(auth -> auth
+                // Frontend pages
+                .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/forgot_password.html").permitAll()
+                // Static resources
+                .requestMatchers("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg", "/**/*.gif").permitAll()
+                // API endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/chat/**").permitAll()
-                .anyRequest().authenticated() // All other endpoints require authentication
+                // All other requests require authentication
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());

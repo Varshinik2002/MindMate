@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")  // Allow frontend to access
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -45,8 +45,6 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         resp.put("message", "User registered successfully!");
-        resp.put("username", user.getUsername());
-        resp.put("email", user.getEmail());
         return ResponseEntity.ok(resp);
     }
 
@@ -85,8 +83,7 @@ public class AuthController {
                 return ResponseEntity.status(404).body(resp);
             }
 
-            // generate 6-digit OTP
-            String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
+            String otp = String.valueOf((int)(Math.random()*900000)+100000);
             otpService.storeOtp(email, otp);
             emailService.sendOtpEmail(email, otp);
 
