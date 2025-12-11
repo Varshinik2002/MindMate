@@ -1,7 +1,7 @@
 // --- Set API URL dynamically ---
  // <-- replace with your backend Render URL
    const API_BASE_URL = window.location.hostname === "localhost" ? 
-   "http://localhost:8080" : "https://mindmate-ti01.onrender.com";
+   "http://localhost:8080" : "https://mindmate-27cv.onrender.com";
 
 // --- Chat Logic ---
 async function sendMessage() {
