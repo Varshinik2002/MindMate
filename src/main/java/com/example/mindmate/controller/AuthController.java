@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")  // Allow frontend to access
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -45,6 +45,8 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         resp.put("message", "User registered successfully!");
+        resp.put("username", user.getUsername());
+        resp.put("email", user.getEmail());
         return ResponseEntity.ok(resp);
     }
 
