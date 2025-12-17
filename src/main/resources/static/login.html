@@ -86,59 +86,66 @@
     </form>
   </div>
 
-  <script>
-    // Backend URL
-   const API_BASE_URL = window.location.hostname === "localhost" ? "http://localhost:8080" : "https://mindmate-27cv.onrender.com";
+ <script>
+  // Backend URL
+  const API_BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:8080"
+      : "https://mindmate-27cv.onrender.com";
 
+  // Email Validation
+  function isValidEmail(email) {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  }
 
-
-    // Email Validation
-    function isValidEmail(email) {
-      return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  // Password Eye Toggle
+  function togglePassword(fieldId, btn) {
+    const field = document.getElementById(fieldId);
+    if (field.type === "password") {
+      field.type = "text";
+      btn.textContent = "🙈";
+    } else {
+      field.type = "password";
+      btn.textContent = "👁️";
     }
+  }
 
-    // Password Eye Toggle
-    function togglePassword(fieldId, btn) {
-      const field = document.getElementById(fieldId);
+  // Helper: sleep
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-      if (field.type === "password") {
-        field.type = "text";
-        btn.textContent = "🙈";
+  // Login Function with retry
+  async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) return alert("Please fill all fields.");
+    if (!isValidEmail(email)) return alert("Invalid email format.");
+
+    // Wait 2 seconds to allow Render to wake backend
+    await sleep(2000);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.message === "Login successful!") {
+        localStorage.setItem("email", email);
+        alert("Welcome back to MindMate 🌿");
+        window.location.href = "index.html";
       } else {
-        field.type = "password";
-        btn.textContent = "👁️";
+        alert(data.message || "Invalid credentials!");
       }
+    } catch (err) {
+      alert("⚠️ Server is waking up. Please try again in a moment.");
     }
+  }
+</script>
 
-    // Login Function
-    async function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      if (!email || !password) return alert("Please fill all fields.");
-      if (!isValidEmail(email)) return alert("Invalid email format.");
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.message === "Login successful!") {
-          localStorage.setItem("email", email);
-          alert("Welcome back to MindMate 🌿");
-          window.location.href = "index.html";
-        } else {
-          alert(data.message || "Invalid credentials!");
-        }
-      } catch (error) {
-        alert("⚠️ Unable to connect to server. Try again later.");
-      }
-    }
-  </script>
 
 </body>
 </html>
